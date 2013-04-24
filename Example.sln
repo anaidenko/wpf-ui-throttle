@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{B834C53F-D407-471A-838C-7ABB15DF5FA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIThrottle", "UIThrottle\UIThrottle.csproj", "{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Debug|x86.ActiveCfg = Debug|x86
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Debug|x86.Build.0 = Debug|x86
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Release|Any CPU.ActiveCfg = Release|x86
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Release|Mixed Platforms.Build.0 = Release|x86
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Release|x86.ActiveCfg = Release|x86
+		{B834C53F-D407-471A-838C-7ABB15DF5FA6}.Release|x86.Build.0 = Release|x86
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{13E3EA76-9CFE-4668-87A9-BFB43E9B5839}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

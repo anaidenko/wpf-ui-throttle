@@ -1,0 +1,25 @@
+﻿<Window x:Class="Example.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="ListBox" x:Key="ReadOnlyListBox">
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <StackPanel Margin="10">
+        <TextBox Name="tbCompanyFilter" Text="{Binding CompanyFilter, UpdateSourceTrigger=PropertyChanged, TargetNullValue=Filter by company name...}"></TextBox>
+        <CheckBox Margin="0,5" IsChecked="{Binding UIThrottleEnabled}">Enable UI Throttle optimization (0.5 seconds)</CheckBox>
+        <ListBox Margin="0,10" Name="lbCompanies" ItemsSource="{Binding FilteredCompanies}"></ListBox>
+    </StackPanel>
+</Window>
