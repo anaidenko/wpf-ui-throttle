@@ -29,7 +29,7 @@ namespace Example
     {
         #region Dependency Properties
 
-        public static readonly DependencyProperty UIThrottleEnabledProperty = DependencyProperty.Register("UIThrottleEnabled", typeof(bool), typeof(MainWindow));
+        public static readonly DependencyProperty UIThrottleEnabledProperty = DependencyProperty.Register("UIThrottleEnabled", typeof(bool), typeof(MainWindow), new PropertyMetadata(true));
         public static readonly DependencyProperty CompanyFilterProperty = DependencyProperty.Register("CompanyFilter", typeof(string), typeof(MainWindow), new PropertyMetadata(new PropertyChangedCallback(CompanyFilterPropertyChanged)));
         public static readonly DependencyProperty FilteredCompaniesProperty = DependencyProperty.Register("FilteredCompanies", typeof(ObservableCollection<string>), typeof(MainWindow), new PropertyMetadata(new ObservableCollection<string>(Registry.Companies)));
 
@@ -69,7 +69,7 @@ namespace Example
 
         private void tbCompanyFilter_GotFocus(object sender, RoutedEventArgs e)
         {
-            CompanyFilter = string.Empty;
+            CompanyFilter = CompanyFilter ?? string.Empty;
         }
 
         private static void CompanyFilterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

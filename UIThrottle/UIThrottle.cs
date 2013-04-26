@@ -12,28 +12,36 @@ namespace MVVM.Core.Optimization
     {
         #region Fields
 
+        private static readonly int LOCK_TIMEOUT = 2000;
+        private static readonly int SLEEP_INTERVAL = 10;
+
         private readonly object _throttleLock = new object();
         private readonly SynchronizationContext _syncContext;
 
-        private readonly int _timeout;
+        private readonly int _throttleTimeout;
 
         private DateTime? _lastActionTimestamp;
         private Action _lastAction;
 
         #endregion
 
-        public UIThrottle(int timeout)
+        public UIThrottle(int throttleTimeout)
         {
-            if (timeout <= 0) throw new ArgumentOutOfRangeException("timeout", "timeout must be positive");
+            if (throttleTimeout <= 0) throw new ArgumentOutOfRangeException("throttleTimeout", "throttleTimeout must be positive");
 
-            _timeout = timeout;
+            _throttleTimeout = throttleTimeout;
             _syncContext = SynchronizationContext.Current;
         }
 
         public void Handle(Action action)
         {
-            lock (_throttleLock)
+            using (var locking = new SafeResourceLock(_throttleLock, LOCK_TIMEOUT))
             {
+                if (locking.IsTimedOut)
+                {
+                    return;
+                }
+
                 var hasPendingRequest = _lastActionTimestamp.HasValue;
 
                 _lastActionTimestamp = DateTime.Now;
@@ -45,16 +53,27 @@ namespace MVVM.Core.Optimization
                 }
             }
 
-            ThreadPool.QueueUserWorkItem(o =>
+            ThreadPool.QueueUserWorkItem(o => ProcessThrottleRequest());
+        }
+
+        private void ProcessThrottleRequest()
+        {
+            try
             {
                 while (true)
                 {
                     DateTime? sleepTimestamp;
-                    int adjustedTimeout = _timeout;
+                    int adjustedTimeout = _throttleTimeout;
 
-                    lock (_throttleLock)
+                    using (var locking = new SafeResourceLock(_throttleLock, LOCK_TIMEOUT))
                     {
-                        adjustedTimeout = (int)(_lastActionTimestamp.Value.AddMilliseconds(_timeout) - DateTime.Now).TotalMilliseconds;
+                        if (locking.IsTimedOut)
+                        {
+                            Thread.Sleep(SLEEP_INTERVAL);
+                            continue;
+                        }
+
+                        adjustedTimeout = (int)(_lastActionTimestamp.Value.AddMilliseconds(_throttleTimeout) - DateTime.Now).TotalMilliseconds;
                         sleepTimestamp = _lastActionTimestamp;
                     }
 
@@ -63,33 +82,54 @@ namespace MVVM.Core.Optimization
                         Thread.Sleep(adjustedTimeout);
                     }
 
-                    lock (_throttleLock)
+                    using (var locking = new SafeResourceLock(_throttleLock, LOCK_TIMEOUT))
                     {
+                        if (locking.IsTimedOut)
+                        {
+                            Thread.Sleep(SLEEP_INTERVAL);
+                            continue;
+                        }
+
                         if (_lastActionTimestamp.Value == sleepTimestamp.Value)
                         {
-                            Execute(_lastAction);
+                            // call asynchronously to prevent deadlocks (acquiring locked _throttleLock on UI thread).
+                            ExecuteAsync(() =>
+                            {
+                                try
+                                {
+                                    _lastAction();
+                                }
+                                // protection from potential exceptions in _lastAction delegate, to be sure we reset throttle state.
+                                finally
+                                {
+                                    _lastActionTimestamp = null;
+                                    _lastAction = null;
+                                }
+                            });
 
-                            _lastActionTimestamp = null;
-                            _lastAction = null;
-
-                            break;
+                            // finish throttle thread work item.
+                            return;
                         }
                     }
 
-                    Thread.Sleep(10);
+                    Thread.Sleep(SLEEP_INTERVAL);
                 }
-            });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        private void Execute(Action action)
+        private void ExecuteAsync(Action action)
         {
             if (_syncContext != null)
             {
-                _syncContext.Send(s => action(), null);
+                _syncContext.Post(s => action(), null);
             }
             else
             {
-                action();
+                ThreadPool.QueueUserWorkItem(o => action());
             }
         }
     }
